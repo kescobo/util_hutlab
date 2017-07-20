@@ -9,7 +9,7 @@ import logging
 parser = argparse.ArgumentParser(description="Concatenate fastq files from same subject.")
 parser.add_argument("directory", help="folder containing fastq files")
 parser.add_argument("-r", "--regex", help="pattern to find identifier and paired end id")
-parser.add_argument("-p", "--paired-end", help="pattern to find identifier and paired end id", action="store_true")
+parser.add_argument("-p", "--paired-end", help="look for paired-end reads", action="store_true")
 parser.add_argument("-o", "--output", help="directory for concatenated files")
 parser.add_argument("--dryrun", help="output logs but do not write files", action="store_true")
 
@@ -57,39 +57,40 @@ logger.addHandler(fh)
 output = args.output
 directory = args.directory
 
-files = glob(directory+"/**/*.fastq")
+files = glob(directory+"/**/*.fastq*")
 
 paired_end = args.paired_end
 regex = args.regex
 
-logging.info("Looking for matching files")
+logger.info("Looking for matching files")
 
 matches = [re.search(regex, x) for x in files]
 ids = sorted(set([x.groups()[0] for x in matches]))
-logging.info("List of sample IDs:\n{}".format(ids))
+logger.info("List of sample IDs:\n{}".format(ids))
+print("List of sample IDs:\n{}".format(ids))
 
 if not os.path.isdir(output):
     os.mkdir(output)
 
 for i in ids:
-    logging.info("Combining files for {}".format(i))
+    logger.info("Combining files for {}".format(i))
     if paired_end:
         f1 = [files[j] for j in range(len(files)) if matches[j].groups()[0] == i and matches[j].groups()[1] == "1"]
         f2 = [files[j] for j in range(len(files)) if matches[j].groups()[0] == i and matches[j].groups()[1] == "2"]
 
         if not f1:
-            logging.warning("no matches found for first read pair")
+            logger.warning("no matches found for first read pair")
         if not f2:
-            logging.warning("no matches found for second read pair")
+            logger.warning("no matches found for second read pair")
 
         for f in f1:
-            logging.info("1st pair - using file {}".format(os.path.basename(f)))
+            logger.info("1st pair - using file {}".format(os.path.basename(f)))
         for f in f2:
-            logging.info("2st pair - using file {}".format(os.path.basename(f)))
+            logger.info("2st pair - using file {}".format(os.path.basename(f)))
 
 
         with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+") as out2:
-            logging.info("Writing to {}".format(out2.name))
+            logger.info("Writing to {}".format(out2.name))
             for f in f2:
                 with open(f, "r") as infile:
                     if not args.dryrun:
@@ -97,12 +98,12 @@ for i in ids:
     else:
         f1 = [files[j] for j in range(len(files)) if matches[j].groups()[0] == i]
         if not f1:
-            logging.warning("no matches found")
+            logger.warning("no matches found")
         for f in f1:
-            logging.info("Using file {}".format(os.path.basename(f)))
+            logger.info("Using file {}".format(os.path.basename(f)))
 
     with open(os.path.join(output, "{}.R1.fastq".format(i)), "w+") as out1:
-        logging.info("Writing to {}".format(out1.name))
+        logger.info("Writing to {}".format(out1.name))
         for f in f1:
             with open(f, "r") as infile:
                 if not args.dryrun:
