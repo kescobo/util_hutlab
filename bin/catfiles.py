@@ -31,6 +31,8 @@ else:
     logpath = ("concatenate.log")
 
 logger = logging.getLogger("Concatenate") # create logger
+logger.setLevel(logging.DEBUG)
+
 sh = logging.StreamHandler()
 fh = logging.FileHandler(logpath)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d,%H:%M:%S')
