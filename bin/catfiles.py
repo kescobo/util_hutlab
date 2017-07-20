@@ -26,9 +26,9 @@ logpath = None
 if args.log:
     logpath = os.path.abspath(args.log)
     if os.path.isdir(logpath):
-        logpath = os.path.join(logpath, "kvasir.log")
+        logpath = os.path.join(logpath, "concatenate.log")
 else:
-    logpath = ("kvasir.log")
+    logpath = ("concatenate.log")
 
 logger = logging.getLogger("Concatenate") # create logger
 sh = logging.StreamHandler()
@@ -61,6 +61,8 @@ files = glob(directory+"/**/*.fastq")
 
 paired_end = args.paired_end
 regex = args.regex
+
+logging.info("Looking for matching files")
 
 matches = [re.search(regex, x) for x in files]
 ids = sorted(set([x.groups()[0] for x in matches]))
