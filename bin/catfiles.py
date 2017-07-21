@@ -53,7 +53,7 @@ if args.log:
 output = args.output
 directory = args.directory
 
-files = glob(directory+"/**/*.fastq*")
+files = glob(directory+"/**/*.fastq*", recursive=True)
 
 paired_end = args.paired_end
 regex = args.regex
