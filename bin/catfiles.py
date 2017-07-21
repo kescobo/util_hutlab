@@ -43,9 +43,11 @@ logger.addHandler(sh) # add handler to logger
 
 if args.log:
     logpath = os.path.abspath(args.log)
+
     if os.path.isdir(logpath):
         logpath = os.path.join(logpath, "concatenate.log")
 
+    fh = logging.FileHandler(logpath)
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
@@ -88,10 +90,10 @@ for i in ids:
             logger.info("2st pair - using file {}".format(os.path.basename(f)))
 
 
-        with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+") as out2:
+        with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+b") as out2:
             logger.info("Writing to {}".format(out2.name))
             for f in f2:
-                with open(f, "r") as infile:
+                with open(f, "rb") as infile:
                     if not args.dryrun:
                         out2.write(infile.read())
     else:
@@ -101,9 +103,9 @@ for i in ids:
         for f in f1:
             logger.info("Using file {}".format(os.path.basename(f)))
 
-    with open(os.path.join(output, "{}.R1.fastq".format(i)), "w+") as out1:
+    with open(os.path.join(output, "{}.R1.fastq".format(i)), "w+b") as out1:
         logger.info("Writing to {}".format(out1.name))
         for f in f1:
-            with open(f, "r") as infile:
+            with open(f, "rb") as infile:
                 if not args.dryrun:
                     out1.write(infile.read())
