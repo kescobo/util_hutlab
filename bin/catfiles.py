@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -41,7 +41,7 @@ else:
 
 logger.addHandler(sh) # add handler to logger
 
-if args.log
+if args.log:
     logpath = os.path.abspath(args.log)
     if os.path.isdir(logpath):
         logpath = os.path.join(logpath, "concatenate.log")
@@ -60,7 +60,7 @@ regex = args.regex
 
 logger.info("Looking for matching files")
 
-matches = [re.search(regex, x) for x in files]
+matches = [re.search(regex, x) for x in files if re.search(regex, x)]
 ids = sorted(set([x.groups()[0] for x in matches]))
 logger.info("List of sample IDs:\n{}".format(ids))
 
