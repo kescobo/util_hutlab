@@ -22,39 +22,33 @@ parser.add_argument("-l", "--log",
 
 args = parser.parse_args()
 
-logpath = None
-if args.log:
-    logpath = os.path.abspath(args.log)
-    if os.path.isdir(logpath):
-        logpath = os.path.join(logpath, "concatenate.log")
-else:
-    logpath = ("concatenate.log")
-
 logger = logging.getLogger("Concatenate") # create logger
 logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d,%H:%M:%S')
 
 sh = logging.StreamHandler()
-fh = logging.FileHandler(logpath)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d,%H:%M:%S')
 sh.setFormatter(formatter)
-fh.setFormatter(formatter)
 
 # set level based on args
 if args.debug:
     sh.setLevel(logging.DEBUG)
-    fh.setLevel(logging.DEBUG)
 elif args.verbose:
     sh.setLevel(logging.INFO)
-    fh.setLevel(logging.INFO)
 elif args.quiet:
     sh.setLevel(logging.ERROR)
-    fh.setLevel(logging.ERROR)
 else:
     sh.setLevel(logging.WARNING)
-    fh.setLevel(logging.WARNING)
 
 logger.addHandler(sh) # add handler to logger
-logger.addHandler(fh)
+
+if args.log
+    logpath = os.path.abspath(args.log)
+    if os.path.isdir(logpath):
+        logpath = os.path.join(logpath, "concatenate.log")
+
+    fh.setLevel(logging.DEBUG)
+    logger.addHandler(fh)
+
 
 output = args.output
 directory = args.directory
@@ -69,7 +63,6 @@ logger.info("Looking for matching files")
 matches = [re.search(regex, x) for x in files]
 ids = sorted(set([x.groups()[0] for x in matches]))
 logger.info("List of sample IDs:\n{}".format(ids))
-print("List of sample IDs:\n{}".format(ids))
 
 if not os.path.isdir(output):
     os.mkdir(output)
