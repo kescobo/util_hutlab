@@ -60,7 +60,11 @@ regex = args.regex
 
 logger.info("Looking for matching files")
 
-matches = [re.search(regex, x) if re.search(regex, x) else 0 for x in files]
+files = [f for f in files if re.search(regex, f)]
+if not files:
+    logger.warning("no matching files found")
+
+matches = [re.search(regex, x) for x in files]
 ids = sorted(set([x.groups()[0] for x in matches]))
 logger.info("List of sample IDs:\n{}".format(ids))
 
@@ -70,8 +74,8 @@ if not os.path.isdir(output):
 for i in ids:
     logger.info("Combining files for {}".format(i))
     if paired_end:
-        f1 = [files[j] for j in range(len(files)) if matches[j] and matches[j].groups()[0] == i and matches[j].groups()[1] == "1"]
-        f2 = [files[j] for j in range(len(files)) if matches[j] and matches[j].groups()[0] == i and matches[j].groups()[1] == "2"]
+        f1 = [files[j] for j in range(len(files)) if matches[j].groups()[0] == i and matches[j].groups()[1] == "1"]
+        f2 = [files[j] for j in range(len(files)) if matches[j].groups()[0] == i and matches[j].groups()[1] == "2"]
 
         if not f1:
             logger.warning("no matches found for first read pair")
@@ -91,7 +95,7 @@ for i in ids:
                     if not args.dryrun:
                         out2.write(infile.read())
     else:
-        f1 = [files[j] for j in range(len(files)) if matches[j] and matches[j].groups()[0] == i]
+        f1 = [files[j] for j in range(len(files)) if matches[j].groups()[0] == i]
         if not f1:
             logger.warning("no matches found")
         for f in f1:
