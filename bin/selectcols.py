@@ -8,8 +8,8 @@ import logging
 
 parser = argparse.ArgumentParser(description="Get selected columns from table.")
 parser.add_argument("table", help="tab-separated text file")
-parser.add_argument("-c", "--columns", help="text file with one column name per line", required=True)
-parser.add_argument("-o", "--output", help="name of output file")
+parser.add_argument("-c", "--columns", help="text file with one column name per line")
+parser.add_argument("-o", "--output", help="name of output file", default=False)
 
 parser.add_argument("-v", "--verbose", help="Display info status messages", action="store_true")
 parser.add_argument("-q", "--quiet", help="Suppress most output", action="store_true")
@@ -49,7 +49,7 @@ if args.log:
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
-if args.out:
+if args.output:
     out = open(args.out, "w+")
 else:
     from sys import stdout
@@ -63,8 +63,10 @@ with open(args.columns, "r") as colfile:
 logger.info("Getting Columns: {}".format(columns))
 
 with open(args.table, "r") as table:
-    cols = table.readline().split("\t")
+    cols = table.readline().strip().split("\t")
+    logger.debug(cols)
     colnos = [i for i, x in enumerate(cols) if x in columns]
+    logger.debug(colnos)
 
     out.write("\t".join([cols[i] for i in colnos]))
     out.write("\n")
@@ -74,5 +76,5 @@ with open(args.table, "r") as table:
         out.write("\t".join([cols[i] for i in colnos]))
         out.write("\n")
 
-if args.out:
+if args.output:
     out.close()
