@@ -117,7 +117,6 @@ logger.info(columns)
 
 with open(args.table, "r") as table:
     cols = table.readline().rstrip("\n").split(sep)
-    logger.debug(cols)
     colnos = [i for i, x in enumerate(cols) if x in columns]
 
     columns = None
@@ -132,7 +131,7 @@ with open(args.table, "r") as table:
             out.write(sep)
     out.write("\n")
 
-    for l in table.readlines():
+    for l in table:
         cols = l.rstrip("\n").split(sep)
         for i in colnos:
             out.write(cols[i])
