@@ -112,7 +112,8 @@ with open(args.columns, "r") as colfile:
     for line in colfile:
         columns.append(line.strip())
 
-logger.info("Getting Columns: {}".format(columns))
+logger.info("Getting Columns:")
+logger.info(columns)
 
 with open(args.table, "r") as table:
     cols = table.readline().rstrip("\n").split(sep)
@@ -126,7 +127,7 @@ with open(args.table, "r") as table:
     logger.debug(colnos)
 
     for i in colnos:
-        out.write([cols[i])
+        out.write(cols[i])
         if not i == colnos[-1]:
             out.write(sep)
     out.write("\n")
@@ -134,7 +135,7 @@ with open(args.table, "r") as table:
     for l in table.readlines():
         cols = l.rstrip("\n").split(sep)
         for i in colnos:
-            out.write([cols[i])
+            out.write(cols[i])
             if not i == colnos[-1]:
                 out.write(sep)
         out.write("\n")
