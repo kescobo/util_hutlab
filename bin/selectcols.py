@@ -86,6 +86,7 @@ if args.log:
         logpath = os.path.join(logpath, "column_select.log")
 
     fh = logging.FileHandler(logpath)
+    fh.setFormatter(formatter)
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
@@ -117,17 +118,25 @@ with open(args.table, "r") as table:
     cols = table.readline().rstrip("\n").split(sep)
     logger.debug(cols)
     colnos = [i for i, x in enumerate(cols) if x in columns]
+
+    columns = None
     if args.keep_first and not colnos[0] == 0:
         colnos.insert(0, 0)
 
     logger.debug(colnos)
 
-    out.write(sep.join([cols[i] for i in colnos]))
+    for i in colnos:
+        out.write([cols[i])
+        if not i == colnos[-1]:
+            out.write(sep)
     out.write("\n")
 
     for l in table.readlines():
         cols = l.rstrip("\n").split(sep)
-        out.write(sep.join([cols[i] for i in colnos]))
+        for i in colnos:
+            out.write([cols[i])
+            if not i == colnos[-1]:
+                out.write(sep)
         out.write("\n")
 
 if args.output:
