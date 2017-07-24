@@ -49,6 +49,7 @@ parser.add_argument("-c", "--columns", help="text file with one column name per 
 parser.add_argument("-s", "--separator", help="separator for columns", default=",")
 parser.add_argument("-o", "--output", help="name of output file", default=False)
 parser.add_argument("-k", "--keep-first", help="Keep first column", action="store_true")
+parser.add_argument("-z", "--keep-zeros", help="Keep rows with only zeros", action="store_true")
 
 # Logging options
 parser.add_argument("-v", "--verbose", help="Display info status messages", action="store_true")
@@ -107,6 +108,16 @@ elif sep == "c" or sep == "comma" or sep == ",":
 else:
     raise ValueError("Invalid separator")
 
+def getcols(row, indicies):
+    return [row[i] for i in indicies]
+
+def writerow(row_list, out_handle, separator):
+    for i in range(len(row_list)):
+        out_handle.write(row_list[i])
+        if not i == len(row_list) - 1:
+            out_handle.write(separator)
+    out_handle.write("\n")
+
 columns = []
 with open(args.columns, "r") as colfile:
     for line in colfile:
@@ -114,6 +125,7 @@ with open(args.columns, "r") as colfile:
 
 logger.info("Getting Columns:")
 logger.info(columns)
+
 
 with open(args.table, "r") as table:
     cols = table.readline().rstrip("\n").split(sep)
@@ -125,19 +137,21 @@ with open(args.table, "r") as table:
 
     logger.debug(colnos)
 
-    for i in colnos:
-        out.write(cols[i])
-        if not i == colnos[-1]:
-            out.write(sep)
-    out.write("\n")
+    cols = getcols(cols, colnos)
+    writerow(cols, out, sep)
 
     for l in table:
-        cols = l.rstrip("\n").split(sep)
-        for i in colnos:
-            out.write(cols[i])
-            if not i == colnos[-1]:
-                out.write(sep)
-        out.write("\n")
+        row = getcols(l.rstrip("\n").split(sep), colnos)
+        if args.keep_zeros:
+            writerow(row, out, sep)
+        else:
+            if args.keep_first:
+                vals = row[1:]
+            else:
+                vals = row
+            if not sum([x for x in map(float, vals)]) == 0:
+                writerow(row, out, sep)
+
 
 if args.output:
     out.close()
