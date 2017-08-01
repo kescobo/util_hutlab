@@ -68,7 +68,7 @@ else:
 # Functions
 
 def readwrite(count_dict, pair, key):
-    logger.debug("reading from {}.R{}.fastq".format(key, pair))
+    logger.info("reading from {}.R{}.fastq".format(key, pair))
     with open("{}.R{}.fastq".format(key, pair)) as r1:
         current = 1
         stop = 0
