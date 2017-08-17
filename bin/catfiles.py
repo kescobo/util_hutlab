@@ -103,12 +103,12 @@ for i in ids:
         for f in f2:
             logger.info("2st pair - using file {}".format(os.path.basename(f)))
 
-
-        with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+b") as out2:
-            logger.info("Writing to {}".format(out2.name))
-            for f in f2:
-                with open(f, "rb") as infile:
-                    if not args.dryrun:
+        logger.info("Writing to {}".format(os.path.basename("{}.R2.fastq".format(i))))
+        if not args.dryrun:
+            with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+b") as out2:
+                logger.info("Writing to {}".format(out2.name))
+                for f in f2:
+                    with open(f, "rb") as infile:
                         out2.write(infile.read())
     else:
         f1 = [files[j] for j in range(len(files)) if matches[j].groups()[idgroup] == i]
