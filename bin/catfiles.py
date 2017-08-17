@@ -49,7 +49,7 @@ else:
 
 logger.addHandler(sh) # add handler to logger
 
-if args.log:
+if args.log and not args.dryrun:
     logpath = os.path.abspath(args.log)
 
     if os.path.isdir(logpath):
@@ -117,9 +117,9 @@ for i in ids:
         for f in f1:
             logger.info("Using file {}".format(os.path.basename(f)))
 
-    with open(os.path.join(output, "{}.R1.fastq".format(i)), "w+b") as out1:
-        logger.info("Writing to {}".format(out1.name))
-        for f in f1:
-            with open(f, "rb") as infile:
-                if not args.dryrun:
+    logger.info("Writing to {}".format(os.path.basename("{}.R1.fastq".format(i))))
+    if not args.dryrun:
+        with open(os.path.join(output, "{}.R1.fastq".format(i)), "w+b") as out1:
+            for f in f1:
+                with open(f, "rb") as infile:
                     out1.write(infile.read())
