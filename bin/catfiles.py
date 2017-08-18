@@ -1,5 +1,58 @@
 #!/usr/bin/env python3
 
+"""
+Given a folder containing many fastq files, concatenate files following
+user-defined regex pattern. Can also handle read-pairs.
+
+For example, say I have the following folders containing fastq files:
+
+```
+seqencing/
+    lane1/
+        patient1_L1_r1.fastq
+        patient1_L1_r2.fastq
+        patient2_L1_r1.fastq
+        patient2_L1_r2.fastq
+        patient3_L1_r1.fastq
+        patient3_L1_r2.fastq
+    lane2/
+        patient1_L2_r1.fastq
+        patient1_L2_r2.fastq
+        patient2_L2_r1.fastq
+        patient2_L2_r2.fastq
+        patient3_L2_r1.fastq
+        patient3_L2_r2.fastq
+```
+
+I would use the regular expression `sequencing\/lane\d\/(patient\d)_L\d_r(1|2)\.fastq`
+
+The first regex group (in this case, `patient\d`) defines which files will be
+concatenated. For paired-end sequencing, the second regex group (which should
+match `1|2`) defines mate pairs indicators.
+
+If for some reason, your regex needs to define additional groups, you can use
+the `--idgroup` and `--pairgroup` flags to specify which regex groups should be
+matched.
+
+The following command, used in the `sequencing/` directory above:
+
+```sh
+python catfiles.py -pr "sequencing\/lane\d\/(patient\d)_L\d_r(1|2)\.fastq" \
+-o ./concatenated --verbose
+```
+
+...will create 6 files:
+
+```
+concatenated/
+    patient1.R1.fastq
+    patient1.R2.fastq
+    patient2.R1.fastq
+    patient2.R2.fastq
+    patient3.R1.fastq
+    patient3.R2.fastq
+"""
+
 import argparse
 import os
 from glob import glob
@@ -7,7 +60,7 @@ import re
 import logging
 
 
-parser = argparse.ArgumentParser(description="Concatenate fastq files from same subject.")
+parser = argparse.ArgumentParser(description="Concatenate fastq files from same subject.", usage=__doc__)
 # Required Args
 parser.add_argument("directory", help="folder containing fastq files")
 parser.add_argument("-r", "--regex", help="pattern to find identifier and paired end id", required=True)
@@ -116,7 +169,7 @@ for i in ids:
             logger.info("Using file {}".format(os.path.basename(f)))
 
     for f in f2:
-        logger.info("2st pair - using file {}".format(os.path.basename(f)))
+        logger.info("2nd pair - using file {}".format(os.path.basename(f)))
 
     logger.info("Writing to {}".format(os.path.basename("{}.R1.fastq".format(i))))
     if not args.dryrun:
