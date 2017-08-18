@@ -84,7 +84,7 @@ matches = [re.search(regex, x) for x in files]
 ids = sorted(set([x.groups()[idgroup] for x in matches]))
 logger.info("List of sample IDs:\n{}".format(ids))
 
-if not os.path.isdir(output):
+if not os.path.isdir(output) and not args.dryrun:
     os.mkdir(output)
 
 for i in ids:
@@ -92,30 +92,31 @@ for i in ids:
     if paired_end:
         f1 = [files[j] for j in range(len(files)) if matches[j].groups()[idgroup] == i and matches[j].groups()[pairgroup] == "1"]
         f2 = [files[j] for j in range(len(files)) if matches[j].groups()[idgroup] == i and matches[j].groups()[pairgroup] == "2"]
-
-        if not f1:
-            logger.warning("no matches found for first read pair")
-        if not f2:
-            logger.warning("no matches found for second read pair")
-
-        for f in f1:
-            logger.info("1st pair - using file {}".format(os.path.basename(f)))
-        for f in f2:
-            logger.info("2st pair - using file {}".format(os.path.basename(f)))
-
-        logger.info("Writing to {}".format(os.path.basename("{}.R2.fastq".format(i))))
-        if not args.dryrun:
-            with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+b") as out2:
-                logger.info("Writing to {}".format(out2.name))
-                for f in f2:
-                    with open(f, "rb") as infile:
-                        out2.write(infile.read())
     else:
         f1 = [files[j] for j in range(len(files)) if matches[j].groups()[idgroup] == i]
-        if not f1:
+        f2 = []
+
+    if not f1:
+        if paired_end:
+            logger.warning("no matches found for first read pair")
+        else:
             logger.warning("no matches found")
-        for f in f1:
+    else:
+        f1.sort()
+
+    if paired_end and not f2:
+        logger.warning("no matches found for second read pair")
+    elif paired_end:
+        f2.sort()
+
+    for f in f1:
+        if paired_end:
+            logger.info("1st pair - using file {}".format(os.path.basename(f)))
+        else:
             logger.info("Using file {}".format(os.path.basename(f)))
+
+    for f in f2:
+        logger.info("2st pair - using file {}".format(os.path.basename(f)))
 
     logger.info("Writing to {}".format(os.path.basename("{}.R1.fastq".format(i))))
     if not args.dryrun:
@@ -123,3 +124,10 @@ for i in ids:
             for f in f1:
                 with open(f, "rb") as infile:
                     out1.write(infile.read())
+    if paired_end:
+        logger.info("Writing to {}".format(os.path.basename("{}.R2.fastq".format(i))))
+        if not args.dryrun:
+            with open(os.path.join(output, "{}.R2.fastq".format(i)), "w+b") as out2:
+                for f in f2:
+                    with open(f, "rb") as infile:
+                        out2.write(infile.read())
