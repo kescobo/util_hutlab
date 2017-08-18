@@ -113,6 +113,8 @@ if args.log and not args.dryrun:
         fh.setLevel(logging.DEBUG)
     else:
         fh.setLevel(logging.INFO)
+
+    fh.setFormatter(formatter)
     logger.addHandler(fh)
 
 
