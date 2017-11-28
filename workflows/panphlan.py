@@ -42,11 +42,12 @@ elif args.refs:
 
 
 for f in in_files:
-    if not os.path.isdir("{}/{}".format(args.output, ref)):
-        os.makedirs("{}/{}".format(args.output, ref))
-    fq_path = os.path.join(args.input, f)
 
     for ref in refs:
+        if not os.path.isdir("{}/{}".format(args.output, ref)):
+            os.makedirs("{}/{}".format(args.output, ref))
+        fq_path = os.path.join(args.input, f)
+
         if args.filesfile:
             if not fq_path in files:
                 skipped = open("{}/{}/skippedfiles.txt".format(args.output, ref), "a")
