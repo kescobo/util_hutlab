@@ -34,9 +34,9 @@ else:
 
 skipped = open("{}/{}/skippedfiles.txt".format(args.output, ref), "w")
 
-if args.ref
+if args.ref:
     refs = [args.ref]
-elif args.refs
+elif args.refs:
     r = open(args.refs, "r")
     refs = readlines(r)
     r.close()
