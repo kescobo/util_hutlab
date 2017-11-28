@@ -53,7 +53,7 @@ for f in in_files:
     elif not os.path.isfile(fq_path):
         continue
 
-    for ref in refs
+    for ref in refs:
         workflow.add_task_gridable(
             cmd, reference=ref,
             depend=fq_path,
