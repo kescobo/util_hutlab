@@ -37,7 +37,7 @@ if args.ref:
     refs = [args.ref]
 elif args.refs:
     r = open(args.refs, "r")
-    refs = r.readlines()
+    refs = [l.strip() for l in r]
     r.close()
 
 for f in in_files:
