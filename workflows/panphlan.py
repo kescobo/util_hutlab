@@ -12,7 +12,7 @@ workflow.add_argument("dbfolder", default=None,
     desc="folder containing database")
 workflow.add_argument("filesfile", default=None,
     desc="file with filepaths to run on (relative to input)")
-workflow.add_argument("ref", default="prevotella",
+workflow.add_argument("ref", default=None,
     desc="name of reference db")
 workflow.add_argument("refs", default=None,
     desc="file with list of references (relative to dbfolder)")
@@ -39,8 +39,6 @@ elif args.refs:
     r = open(args.refs, "r")
     refs = readlines(r)
     r.close()
-
-print(refs)
 
 for f in in_files:
 
