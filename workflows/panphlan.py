@@ -58,7 +58,7 @@ for f in in_files:
         workflow.add_task_gridable(
             cmd, reference=ref,
             depend=fq_path,
-            target="{}{}_panphlan_map.csv.bz2".format(args.output, f.strip(".fastq.gz")),
+            target="{}{}_panphlan_map.csv.bz2".format(args.output, os.path.basename(f.strip(".fastq.gz"))),
             folder=args.output,
             threads=args.threads,
             cores=args.threads,
