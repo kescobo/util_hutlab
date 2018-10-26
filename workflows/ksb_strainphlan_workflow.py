@@ -26,8 +26,9 @@ for clade in clade_list:
     workflow.add_task_gridable(
         cmd,
         target=(),
+        markers=markers,
         folder=args.output,
-        clade=clade,
+        clades=clade,
         threads=args.threads,
         cores=args.threads,
         time=4*60, mem=8*1000)
