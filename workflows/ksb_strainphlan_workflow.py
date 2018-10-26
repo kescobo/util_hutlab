@@ -21,7 +21,7 @@ print(clade_list)
 
 for clade in clade_list:
 
-    cmd = "strainphlan.py --ifn_samples {markers}*.markers --output_dir {folder} --clades {clade}"
+    cmd = "strainphlan.py --ifn_samples [markers]*.markers --output_dir [folder] --clades [clade]"
 
     workflow.add_task_gridable(
         cmd,
