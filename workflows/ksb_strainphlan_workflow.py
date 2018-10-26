@@ -14,9 +14,9 @@ clade_list = []
 
 with open(clades) as handle:
     for l in handle:
-        clade_list.append(l.split()[1])
+        clade_list.append(l.split()[0])
 
-print(taxa)
+print(clade_list)
 
 for clade in clade_list:
 
