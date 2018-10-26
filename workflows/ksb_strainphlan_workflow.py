@@ -7,8 +7,8 @@ workflow.add_argument("clades", desc="output from --print_clades_only", default=
 workflow.add_argument("markers", desc="folder containing markers", default="markers")
 args = workflow.parse_args()
 
-clades = os.path.abspath(args["clades"])
-markers = os.path.abspath(args["markers"])
+clades = os.path.abspath(args.clades)
+markers = os.path.abspath(args.markers)
 
 clade_list = []
 
@@ -30,3 +30,5 @@ for clade in clade_list:
         threads=args.threads,
         cores=args.threads,
         time=4*60, mem=8*1000)
+
+workflow.go()
