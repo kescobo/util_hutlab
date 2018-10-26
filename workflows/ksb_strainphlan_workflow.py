@@ -5,6 +5,7 @@ workflow = Workflow(version="0.1", description="A workflow to run strainphlan")
 
 workflow.add_argument("clades", desc="output from --print_clades_only", default="clades.txt")
 workflow.add_argument("markers", desc="folder containing markers", default="markers")
+workflow.add_argument("threads", desc="nuber of threads", default=8)
 args = workflow.parse_args()
 
 clades = os.path.abspath(args.clades)
