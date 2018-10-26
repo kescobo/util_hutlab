@@ -30,8 +30,8 @@ elif args.refs:
 for ref in refs:
     if os.path.isdir(ref):
         workflow.add_task_gridable(
-            cmd.format(ref, ref),
-            target="{}profiles/{}_pa.tsv".format(output,ref),
+            cmd.format(ref, os.path.join(args.input, ref)),
+            target="{}profiles/{}_pa.tsv".format(args.output,ref),
             cores=1,
             time=30, mem=1000)
 
