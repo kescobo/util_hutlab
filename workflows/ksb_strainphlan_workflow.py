@@ -25,7 +25,8 @@ for clade in clade_list:
     cmd = "strainphlan.py --ifn_samples [markers] --output_dir [folder] --clades [clade]"
 
     genomes=set()
-    with open("/n/huttenhower_lab/tools/biobakery_workflows/biobakery_workflows/data/strainphlan_species_gcf.tsv")) as file_handle:
+    reference_folder = os.environ['STRAINPHLAN_DB_REFERENCE']
+    with open("/n/huttenhower_lab/tools/biobakery_workflows/biobakery_workflows/data/strainphlan_species_gcf.tsv") as file_handle:
         for line in file_handle:
             if line.startswith(clade):
                 genomes.add(os.path.join(reference_folder,line.rstrip().split("\t")[-1]+".fna.bz2"))
