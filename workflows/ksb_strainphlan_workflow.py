@@ -17,10 +17,7 @@ with open(clades) as handle:
     for l in handle:
         clade_list.append(l.split()[0])
 
-print(clade_list)
-
 for clade in clade_list:
-    print(clade)
 
     cmd = "strainphlan.py --ifn_samples [markers] --output_dir [folder] --clades [clade]"
 
@@ -32,6 +29,8 @@ for clade in clade_list:
                 genomes.add(os.path.join(reference_folder,line.rstrip().split("\t")[-1]+".fna.bz2"))
 
     genomes = list(filter(os.path.isfile,genomes))
+    if len(genomes) > 10:
+            genomes = genomes[:10]
 
     if len(genomes):
         cmd += " --ifn_ref_genomes " + " --ifn_ref_genomes ".join(genomes)
