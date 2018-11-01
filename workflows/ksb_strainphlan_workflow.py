@@ -20,8 +20,20 @@ with open(clades) as handle:
 print(clade_list)
 
 for clade in clade_list:
+    print(clade)
 
     cmd = "strainphlan.py --ifn_samples [markers] --output_dir [folder] --clades [clade]"
+
+    genomes=set()
+    with open("/n/huttenhower_lab/tools/biobakery_workflows/biobakery_workflows/data/strainphlan_species_gcf.tsv")) as file_handle:
+        for line in file_handle:
+            if line.startswith(clade):
+                genomes.add(os.path.join(reference_folder,line.rstrip().split("\t")[-1]+".fna.bz2"))
+
+    genomes = list(filter(os.path.isfile,genomes))
+
+    if len(genomes):
+        cmd += " --ifn_ref_genomes " + " --ifn_ref_genomes ".join(genomes)
 
     workflow.add_task_gridable(
         cmd,
